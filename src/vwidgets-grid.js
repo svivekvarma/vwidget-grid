@@ -56,19 +56,18 @@
             showCsvOption: true,
             showExportOptions: true
         },
-        _privateData: {
-            renderedPagination: false,
-            currentPage: 1,
-            currentBlock: 1,
-            totalPages: 0,
-            totalBlocks: 0,
-            dataconfiguration: {},
-            headers: []
-        },
         _create: function () {
             this.element.addClass("vwidgetsgrid");
-
             console.log(this.options);
+            this._privateData = {
+                renderedPagination: false,
+                currentPage: 1,
+                currentBlock: 1,
+                totalPages: 0,
+                totalBlocks: 0,
+                dataconfiguration: {},
+                headers: []
+            }
             this._privateData.originalData = this.options.data;
             this._renderDeskTop();
         },
@@ -348,7 +347,7 @@
                     }
                 }
                 if (this.options.showOnlyMode) {
-                    for(var j = 0 ; j< this.options.showOnlyFields.length; j++){
+                    for (var j = 0; j < this.options.showOnlyFields.length; j++) {
                         arrHTML.push(' <td>');
                         arrHTML.push(this._fieldOutput(this.options.data[i][this.options.showOnlyFields[j]], this.options.showOnlyFields[j], this.options.data[i]));
                         arrHTML.push(' </td>');
