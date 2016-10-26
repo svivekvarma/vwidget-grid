@@ -74,6 +74,7 @@
         },
         _setOption: function (key, value) {
             if (key === "data") {
+                this._calculatePagesBlocks();
                 if (this._privateData.renderedPagination) {
                     this._renderPagination();
                     this._renderRows();
@@ -87,6 +88,7 @@
             this.refresh();
         },
         _renderDeskTop: function () {
+            this._calculatePagesBlocks();
             this._extractHeaders();
             console.log(this._privateData.headers);
             if (this._privateData.headers.length > 0) {
@@ -115,13 +117,15 @@
                 }
                 arrHTML = arrHTML.concat(this._generateTable());
                 this.element.append(arrHTML.join(''));
+
                 //check if overflow needs to be setup for grid container
                 if (this.element.find('.' + this.options.css.table + '').width() > this.element.find('.gridcontainer').width()) {
                     this.element.find('.gridcontainer').css('overflow-x', 'scroll');
                 }
 
-                this._bindEvents();
                 // Add event binding here
+                this._bindEvents();
+
             }
         },
         _renderMobile: function () {
@@ -165,18 +169,6 @@
                     this.element.append(arrPagination.join(''));
                     arrPagination = [];
                 }
-
-                var totalpages = 1;
-                if (this.options.data.length >= this.options.pageSize) {
-                    totalpages = this.options.data.length / this.options.pageSize;
-                }
-                var totalblocks = 1;
-                if (totalpages > this.options.paginationPageSize) {
-                    totalblocks = totalpages / this.options.paginationPageSize;
-                }
-                this._privateData.totalPages = Math.ceil(totalpages);
-                this._privateData.totalBlocks = Math.ceil(totalblocks);
-
                 // render the page number based on block logic
                 var startpage;
                 var endpage;
@@ -185,18 +177,9 @@
                 startpage = result.startpage;
                 endpage = result.endpage;
 
-                // implied by situations where data is refreshed by deleting records go to last block and last page
-                if (startpage > endpage) {
-                    //this._privateData.currentBlock = this._privateData.totalBlocks - 1;
-                    this._privateData.currentPage = this._privateData.totalPages - 1;
-                    result = this._calculateStartEndPage();
-                    startpage = result.startpage;
-                    endpage = result.endpage;
-                }
-
                 arrPagination.push('<li class="paginationpage"><a>' + "<<" + '</a></li>');
                 for (var i = startpage; i <= endpage; i++) {
-                    if (i == startpage) {
+                    if (i == this._privateData.currentPage) {
                         arrPagination.push('<li class="paginationpage active"><a>' + i + '</a></li>');
                     } else {
                         arrPagination.push('<li class="paginationpage"><a>' + i + '</a></li>');
@@ -207,24 +190,40 @@
                 this._privateData.renderedPagination = true;
             }
         },
+        _calculatePagesBlocks: function () {
+            var totalpages = 1;
+            if (this.options.data.length >= this.options.pageSize) {
+                totalpages = this.options.data.length / this.options.pageSize;
+            }
+            var totalblocks = 1;
+            if (totalpages > this.options.paginationPageSize) {
+                totalblocks = totalpages / this.options.paginationPageSize;
+            }
+            this._privateData.totalPages = Math.ceil(totalpages);
+            this._privateData.totalBlocks = Math.ceil(totalblocks);
+        },
         _calculateStartEndPage: function () {
 
-            // render the page number based on block logic
             var startpage;
             var endpage;
-
-            if (this._privateData.totalPages - this._privateData.currentPage >= this.options.paginationPageSize) {
-                startpage = this._privateData.currentPage;
-                endpage = this._privateData.currentPage + (this.options.paginationPageSize - 1);
-            } else {
-                startpage = this._privateData.currentPage;
-                endpage = this._privateData.totalPages;
-                if (endpage === 0) {
-                    endpage = startpage;
+            if (this._privateData.currentPage > this._privateData.totalPages) {
+                this._privateData.currentPage = this._privateData.totalPages;
+            }
+            var blocktorender = 1;
+            for (var i = 1; i <= this._privateData.totalBlocks; i++) {
+                if (this._privateData.currentPage <= (i * this.options.paginationPageSize) &&
+                    this._privateData.currentPage >= (i * this.options.paginationPageSize - this.options.paginationPageSize + 1)) {
+                    this._privateData.currentBlock = i;
+                    endpage = i * this.options.paginationPageSize;
+                    startpage = i * this.options.paginationPageSize - this.options.paginationPageSize + 1;
+                    break;
                 }
             }
 
-            return {startpage: startpage, endpage: endpage};
+            if (endpage > this._privateData.totalPages) {
+                endpage = this._privateData.totalPages;
+            }
+            return { startpage: startpage, endpage: endpage };
         },
         _generateTable: function (exportmode) {
             var arrHTML = [];
@@ -242,15 +241,26 @@
                         }
                     }
                 }
-                if (this._privateData.headers.length > 0) {
-                    for (var i = 0; i < this._privateData.headers.length; i++) {
-                        arrHTML.push(' <th data-realname="' + this._privateData.headers[i] + '">');
-                        arrHTML.push(this._headerOutput(this._privateData.headers[i]));
+                if (this.options.showOnlyMode) {
+                    for (var i = 0; i < this.options.showOnlyFields.length; i++) {
+                        arrHTML.push(' <th data-realname="' + this.options.showOnlyFields[i] + '">');
+                        arrHTML.push(this._headerOutput(this.options.showOnlyFields[i]));
                         arrHTML.push('<span class="sortindicator asc">&uarr;</span>');
                         arrHTML.push('<span class="sortindicator desc">&darr;</span>');
                         arrHTML.push('</th>');
                     }
+                } else {
+                    if (this._privateData.headers.length > 0) {
+                        for (var i = 0; i < this._privateData.headers.length; i++) {
+                            arrHTML.push(' <th data-realname="' + this._privateData.headers[i] + '">');
+                            arrHTML.push(this._headerOutput(this._privateData.headers[i]));
+                            arrHTML.push('<span class="sortindicator asc">&uarr;</span>');
+                            arrHTML.push('<span class="sortindicator desc">&darr;</span>');
+                            arrHTML.push('</th>');
+                        }
+                    }
                 }
+
 
                 if (this.options.amalgateColumns.length > 0) {
                     for (var i = 0; i < this.options.amalgateColumns.length; i++) {
@@ -337,11 +347,18 @@
                         }
                     }
                 }
-
-                for (var j = 0; j < this._privateData.headers.length; j++) {
-                    arrHTML.push(' <td>');
-                    arrHTML.push(this._fieldOutput(this.options.data[i][this._privateData.headers[j]], this._privateData.headers[j], this.options.data[i]));
-                    arrHTML.push(' </td>');
+                if (this.options.showOnlyMode) {
+                    for(var j = 0 ; j< this.options.showOnlyFields.length; j++){
+                        arrHTML.push(' <td>');
+                        arrHTML.push(this._fieldOutput(this.options.data[i][this.options.showOnlyFields[j]], this.options.showOnlyFields[j], this.options.data[i]));
+                        arrHTML.push(' </td>');
+                    }
+                } else {
+                    for (var j = 0; j < this._privateData.headers.length; j++) {
+                        arrHTML.push(' <td>');
+                        arrHTML.push(this._fieldOutput(this.options.data[i][this._privateData.headers[j]], this._privateData.headers[j], this.options.data[i]));
+                        arrHTML.push(' </td>');
+                    }
                 }
 
                 if (this.options.amalgateColumns.length > 0) {
