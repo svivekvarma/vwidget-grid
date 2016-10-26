@@ -4,7 +4,7 @@
   "description": "A simple grid plugin to render data responsively and has native and bootstrap plugins built in",
   "main": "index.js",
   "scripts": {
-    "start": "browser-sync start --server --files 'src/*.*'",
+    "start": "browser-sync start --server --files '**/*'",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
