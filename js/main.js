@@ -3,7 +3,7 @@ var globaldata = {};
 $(function () {
     $.getJSON('js/data.json').done(function (data) {
         globaldata = data;
-        console.log(data);
+       
         $('#sample1').vgrid({ data: data.fathers, showOnlyMode: false, showOnlyFields: ["id"] });
 
         $('#sample2').vgrid({
@@ -25,17 +25,24 @@ $(function () {
     $('#sample2').on('click', function (event) {
         console.log(event);
         var index =  parseInt($(event.target).attr("data-id"));
-        console.log(globaldata.fathers.length);
-        globaldata.fathers.splice(index-1, 1);
-        console.log(globaldata.fathers.length);
+        //console.log(globaldata.fathers.length);
+        var foundindex = 0;
+
+        $.each(globaldata.fathers, function(i,n){
+            if(n.id === index){
+                foundindex = i;
+            }
+        })
+        globaldata.fathers.splice(foundindex, 1);
+        //console.log(globaldata.fathers.length);
         $('#sample2').vgrid('option', 'data', globaldata.fathers);
 
     });
 
     $('#deletelastrecord').click(function () {
-        console.log(globaldata.fathers.length);
+      
         globaldata.fathers.pop();
-        console.log(globaldata.fathers.length);
+      
         $('#sample1').vgrid('option', 'data', globaldata.fathers);
     })
 })

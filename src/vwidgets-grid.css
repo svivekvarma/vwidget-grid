@@ -9,6 +9,7 @@ body {
 .vwidgetsgrid{
     margin: 20px;
     font-size: 12px;
+    color: #444;
 }
 
 .tablerenderpagination {
@@ -22,23 +23,17 @@ body {
     display: inline-block;
     margin: 0px;
     padding: 0px;
-    border: 1px solid #333;
+    border: 1px solid #b4babf;
     border-radius: 4px;
+    color: #666a6c;
 }
 
 .tablerenderpagination ul li {
     float: left;
     padding: 8px;
-    border-right: 1px solid #333;
+    border-right: 1px solid #b4babf;
     cursor: pointer;
 }
-
-
-/*
-.tablerenderpagination ul li a
-{
-    color:#669;
-}*/
 
 .tablerenderpagination ul li.active,
 ul li.active:hover {
@@ -112,7 +107,7 @@ ul li.active:hover {
 .grid {
     margin: 5px auto;
     border-collapse: collapse;
-    table-layout: auto;
+    table-layout: fixed;
     text-align: left;
     font-family: "Helvetica";
     color: #333;
@@ -128,31 +123,37 @@ ul li.active:hover {
     padding: 8px;
     font-weight: bold;
     color: #fff;
-    background: #09517D;
+    background: #2c6aa3;
     text-transform: capitalize;
     cursor: pointer;
+    overflow: hidden;
+    padding: 10px;
+    font-weight: 400;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    text-align: left;
 }
 
 .grid .sortindicator {
     float: right;
-    font-size: 16px;
+    font-size: 8px;
     font-weight: bold;
 }
 
 .grid span.asc,
 .grid span.desc {
     margin: 2px;
-    display: none;
+    visibility: hidden;
     line-height: 15px;
     vertical-align: middle;
 }
 
 .grid th[data-sortasc=true] span.asc {
-    display: inline;
+    visibility: visible;
 }
 
 .grid th[data-sortasc=false] span.desc {
-    display: inline;
+    visibility: visible;
 }
 
 .grid th:first-child {
@@ -174,13 +175,18 @@ ul li.active:hover {
 }
 
 .grid tbody tr:nth-of-type(odd) td {
-    background-color: #f9f9f9;
+    background-color: #edeeef;
 }
 
 .grid td {
     padding: 8px;
     background: #ffffff;
     border-top: 1px solid #fff;
+    padding: .4em .6em;
+    overflow: hidden;
+    line-height: 1.6em;
+    vertical-align: middle;
+    text-overflow: ellipsis;
 }
 
 .grid tbody tr:hover td {
@@ -195,4 +201,45 @@ ul li.active:hover {
 .grid td input[type=image] {
     height: 20px;
     width: 20px;
+}
+
+.gridlistcontainer{
+    border: 1px  solid grey;
+    border-radius: 5px;
+    padding: 5px;
+    margin: 0 auto;
+}
+
+.gridlistcontainer .gridlistitem{
+    border: 1px solid grey;
+    border-bottom: none;
+    padding: 5px;
+}
+
+.gridlistcontainer .gridlistitem:last-child{
+    border-bottom: 1px solid grey;  
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.gridlistcontainer .gridlistitem:first-child{
+      
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+.gridlistcontainer .gridlistitem .listitemheader{
+    display: inline-block;
+    width: 40%;
+    padding: 5px;
+}
+
+.gridlistcontainer .gridlistitem .listitemfield{
+    display: inline-block;
+    width: 40%;
+    padding: 5px;
+}
+
+.gridlistcontainer .gridlistitem .amalgatecolumn{
+   width: 100%;
+   text-align: right;
 }

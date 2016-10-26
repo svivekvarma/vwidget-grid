@@ -58,7 +58,6 @@
         },
         _create: function () {
             this.element.addClass("vwidgetsgrid");
-            console.log(this.options);
             this._privateData = {
                 renderedPagination: false,
                 currentPage: 1,
@@ -69,12 +68,19 @@
                 headers: []
             }
             this._privateData.originalData = this.options.data;
+            this._calculatePagesBlocks();
+            this._extractHeaders();
             this._renderDeskTop();
+            this._renderMobile();
         },
         _setOption: function (key, value) {
             if (key === "data") {
+                this._privateData.originalData = value;
                 this._calculatePagesBlocks();
                 if (this._privateData.renderedPagination) {
+                    if (this.element.find('input.searchtextfield').val() !== "") {
+                        this._searchText(this.element.find('input.searchtextfield').val());
+                    }
                     this._renderPagination();
                     this._renderRows();
                 }
@@ -87,9 +93,7 @@
             this.refresh();
         },
         _renderDeskTop: function () {
-            this._calculatePagesBlocks();
-            this._extractHeaders();
-            console.log(this._privateData.headers);
+           
             if (this._privateData.headers.length > 0) {
                 if (this.options.showPagination) {
                     this._renderPagination();
@@ -128,7 +132,7 @@
             }
         },
         _renderMobile: function () {
-
+            this.element.append(this._generateList(false).join(''));
         },
         _extractHeaders: function () {
             if (!this.options.showOnlyMode) {
@@ -286,6 +290,72 @@
             arrHTML.push('</div>');
             return arrHTML;
         },
+        _generateList: function (exportmode) {
+            var arrHTML = [];
+            arrHTML.push('<div class="gridlistcontainer">');
+            if ((this._privateData.headers.length > 0 || this.options.amalgateColumns.length > 0) && this.options.data.length > 0) {
+
+                var startendrecords = this._calculateStartEndRecords(exportmode);
+
+                for (var i = startendrecords.startrecord; i <= startendrecords.endrecord; i++) {
+
+                    arrHTML.push(' <div class="gridlistitem">');
+                    if (this.options.amalgateColumns.length > 0) {
+                        for (var am = 0; am < this.options.amalgateColumns.length; am++) {
+                            if (this.options.amalgateColumns[am].prepend) {
+                                if (this.options.amalgateColumns[am].hasOwnProperty('style')) {
+                                    arrHTML.push('<div class="amalgatecolumn" style="' + this.options.amalgateColumns[am].style + '">');
+                                } else {
+                                    arrHTML.push('<div class="amalgatecolumn">');
+                                }
+                                arrHTML.push(this.options.amalgateColumns[am].template(this.options.data[i], i));
+                                arrHTML.push('</div>');
+                            }
+                        }
+                    }
+                    if (this.options.showOnlyMode) {
+                        for (var j = 0; j < this.options.showOnlyFields.length; j++) {
+                            arrHTML.push(' <div class="listitemheader">');
+                            arrHTML.push(this._headerOutput(this.options.showOnlyFields[j]));
+                            arrHTML.push(' </div>');
+                            arrHTML.push(' <div class="listitemfield">');
+                            arrHTML.push(this._fieldOutput(this.options.data[i][this.options.showOnlyFields[j]], this.options.showOnlyFields[j], this.options.data[i]));
+                            arrHTML.push(' </div>');
+                        }
+                    } else {
+                        for (var j = 0; j < this._privateData.headers.length; j++) {
+                            arrHTML.push(' <div class="listitemheader">');
+                            arrHTML.push(this._headerOutput(this._privateData.headers[j]));
+                            arrHTML.push(' </div>');
+                            arrHTML.push(' <div class="listitemfield">');
+                            arrHTML.push(this._fieldOutput(this.options.data[i][this._privateData.headers[j]], this._privateData.headers[j], this.options.data[i]));
+                            arrHTML.push(' </div>');
+                        }
+                    }
+
+                    if (this.options.amalgateColumns.length > 0) {
+                        for (var am = 0; am < this.options.amalgateColumns.length; am++) {
+                            if (!this.options.amalgateColumns[am].prepend) {
+                                if (this.options.amalgateColumns[am].hasOwnProperty('style')) {
+                                    arrHTML.push('<div class="amalgatecolumn" style="' + this.options.amalgateColumns[am].style + '">');
+                                } else {
+                                    arrHTML.push('<div class="amalgatecolumn">');
+                                }
+                                arrHTML.push(this.options.amalgateColumns[am].template(this.options.data[i], i));
+                                arrHTML.push('</div>');
+                            }
+                        }
+                    }
+                    arrHTML.push(' </div>');
+                }
+            } else {
+                arrHTML.push('<div class="gridlistempty">');
+                arrHTML.push(this.options.emptyDataMessage);
+                arrHTML.push('</div>');
+            }
+            arrHTML.push('</div>');
+            return arrHTML;
+        },
         _renderRows: function () {
             this.element.find('.' + this.options.css.table + ':first')
                 .find('tbody:first')
@@ -301,28 +371,8 @@
 
             arrHTML = [];
 
-            // Pagination info is used to calculate which records to show
-            var startrecord = 0,
-                endrecord = 0;
-            if (this.options.showPagination && !printmode) {
+            var startendrecords = this._calculateStartEndRecords(printmode);
 
-                var currentpage = this._privateData.currentPage,
-                    currentpagesize = this.options.pageSize;
-
-                startrecord = (currentpage) * currentpagesize - currentpagesize;
-                if (startrecord < 0) {
-                    startrecord = 0;
-                }
-
-                if (startrecord + currentpagesize > this.options.data.length) {
-                    endrecord = this.options.data.length - 1;
-                } else {
-                    endrecord = startrecord + currentpagesize - 1;
-                }
-            } else {
-                startrecord = 0;
-                endrecord = this.options.data.length - 1;
-            }
             if (this.options.data.length === 0) {
                 var headers = this._privateData.headers;
                 arrHTML.push(' <tr>');
@@ -330,7 +380,7 @@
                 arrHTML.push(' </tr>');
             }
 
-            for (var i = startrecord; i <= endrecord; i++) {
+            for (var i = startendrecords.startrecord; i <= startendrecords.endrecord; i++) {
 
                 arrHTML.push(' <tr>');
                 if (this.options.amalgateColumns.length > 0) {
@@ -376,9 +426,32 @@
                 }
                 arrHTML.push(' </tr>');
             }
-
             return arrHTML;
+        },
+        _calculateStartEndRecords: function (printmode) {
+            // Pagination info is used to calculate which records to show
+            var startrecord = 0,
+                endrecord = 0;
+            if (this.options.showPagination && !printmode) {
 
+                var currentpage = this._privateData.currentPage,
+                    currentpagesize = this.options.pageSize;
+
+                startrecord = (currentpage) * currentpagesize - currentpagesize;
+                if (startrecord < 0) {
+                    startrecord = 0;
+                }
+
+                if (startrecord + currentpagesize > this.options.data.length) {
+                    endrecord = this.options.data.length - 1;
+                } else {
+                    endrecord = startrecord + currentpagesize - 1;
+                }
+            } else {
+                startrecord = 0;
+                endrecord = this.options.data.length - 1;
+            }
+            return { startrecord: startrecord, endrecord: endrecord };
         },
         _headerOutput: function () {
             var field = arguments[0];
@@ -534,8 +607,8 @@
 
             this._on(this.element, {
                 "click th": function (event) {
-                    event.stopImmediatePropogation();
-                    console.log(event);
+                    event.stopImmediatePropagation();
+
                     if (!($(event.currentTarget).attr('data-realname') === "amalgated")) {
                         this._privateData.sortField = $(event.currentTarget).attr('data-realname');
                         this.element.find('.tablerenderpagination > ul > li').removeClass('active');
@@ -551,8 +624,8 @@
 
             this._on(this.element, {
                 "keyup .searchtextfield": function (event) {
-                    event.preventDefault();
-                    console.log(event);
+                    event.stopImmediatePropagation();
+
                     this._privateData.currentBlock = 1;
                     this._privateData.currentPage = 1;
                     this._searchText($(event.currentTarget).val());
@@ -564,8 +637,8 @@
 
             this._on(this.element, {
                 "click .printicon": function (event) {
-                    event.preventDefault();
-                    console.log(event);
+                    event.stopImmediatePropagation();
+
                     var arrHtml = this._generateTable(true);
                     arrHtml.splice(0, 0, "<link href='tablerender.css' rel='stylesheet' media='all'/>");
                     var printWin = window.open("");
@@ -581,8 +654,8 @@
 
             this._on(this.element, {
                 "click .downloadicon": function (event) {
-                    event.preventDefault();
-                    console.log(event);
+                    event.stopImmediatePropagation();
+
                     var data, link;
                     var csv = this._convertToCSV();
                     if (csv == null) return;
@@ -621,13 +694,12 @@
                 }
             });
 
-
             // Bind pagination events
 
             this._on(this.element, {
                 "click .paginationpage": function (event) {
                     event.stopImmediatePropagation();
-                    console.log(event);
+
                     var pagenum = $(event.currentTarget).text();
                     this.element.find('.tablerenderpagination > ul > li').removeClass('active');
                     if (!(pagenum === "<<" || pagenum === ">>")) {
