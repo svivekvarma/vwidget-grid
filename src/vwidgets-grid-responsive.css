@@ -1,0 +1,43 @@
+@media only screen and (max-width: 767px) {
+  /* Styles */
+.vwidgetsgrid{
+    border: 1px solid  #bac0c4;
+    border-radius: 5px;
+    padding: 10px 5px;
+}
+
+ .gridcontainer{
+     display: none;
+ }
+
+ .searchsection{
+     display: block;
+ }
+
+ .tablerenderpagination{
+     display: block;
+     clear:both;
+     margin: 0 auto;
+     float:none;
+     text-align: center;
+ }
+
+ .exportoptions{
+      display: block;
+     clear:both;
+     margin: 0 auto;
+     float:none;
+     text-align: center;
+ }
+
+ .searchsection{
+     float: none;
+     text-align: center;
+ }
+
+ 
+ .searchsection label{
+     display: none;
+ }
+
+}

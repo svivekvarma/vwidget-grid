@@ -113,6 +113,7 @@ ul li.active:hover {
     color: #333;
     width: 100%;
     word-wrap: break-word;
+    border: 1px solid  #bac0c4;
 }
 
 .overridewidth {
@@ -204,14 +205,14 @@ ul li.active:hover {
 }
 
 .gridlistcontainer{
-    border: 1px  solid grey;
+    border: 1px  solid  #bac0c4;
     border-radius: 5px;
     padding: 5px;
     margin: 0 auto;
 }
 
 .gridlistcontainer .gridlistitem{
-    border: 1px solid grey;
+    border: 1px solid #bac0c4;
     border-bottom: none;
     padding: 5px;
 }

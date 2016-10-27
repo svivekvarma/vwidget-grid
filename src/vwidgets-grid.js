@@ -93,7 +93,7 @@
             this.refresh();
         },
         _renderDeskTop: function () {
-           
+
             if (this._privateData.headers.length > 0) {
                 if (this.options.showPagination) {
                     this._renderPagination();
@@ -132,7 +132,11 @@
             }
         },
         _renderMobile: function () {
-            this.element.append(this._generateList(false).join(''));
+            var arrHTML = [];
+            arrHTML.push('<div class="gridlistcontainer">');
+            arrHTML.push('</div>');
+            this.element.append(arrHTML.join(''));
+            this.element.find('.gridlistcontainer').html(this._generateList(false).join(''));
         },
         _extractHeaders: function () {
             if (!this.options.showOnlyMode) {
@@ -292,7 +296,7 @@
         },
         _generateList: function (exportmode) {
             var arrHTML = [];
-            arrHTML.push('<div class="gridlistcontainer">');
+            arrHTML.push(' <div class="clearboth">');
             if ((this._privateData.headers.length > 0 || this.options.amalgateColumns.length > 0) && this.options.data.length > 0) {
 
                 var startendrecords = this._calculateStartEndRecords(exportmode);
@@ -353,7 +357,7 @@
                 arrHTML.push(this.options.emptyDataMessage);
                 arrHTML.push('</div>');
             }
-            arrHTML.push('</div>');
+            arrHTML.push(' </div>');
             return arrHTML;
         },
         _renderRows: function () {
@@ -366,6 +370,10 @@
             this.element.find('.' + this.options.css.table + ':first')
                 .find('tbody:first')
                 .html(html.join(''));
+        },
+        _renderMobileDesktop: function () {
+            this._renderRows();
+            this.element.find('.gridlistcontainer').html(this._generateList(false).join(''));
         },
         _getRowsHtml: function (printmode) {
 
@@ -572,7 +580,8 @@
             var sortstring = currentSort == "true" ? "" : "-";
             this.options.data = this.options.data.sort(this._customSort(sortstring + this._privateData.sortField));
             this.element.find(' th[data-realname=' + this._privateData.sortField + ']').attr('data-sortasc', currentSort.toString());
-            this._renderRows();
+            this._renderMobileDesktop();
+
         },
         _searchText: function (searchtext) {
             if (searchtext === '' || searchtext === "") {
@@ -599,7 +608,7 @@
             }
 
             this._renderPagination();
-            this._renderRows();
+            this._renderMobileDesktop();
         },
         _bindEvents: function () {
 
@@ -722,7 +731,7 @@
                             return;
                         }
                     }
-                    this._renderRows();
+                    this._renderMobileDesktop();
                 }
             });
         },
