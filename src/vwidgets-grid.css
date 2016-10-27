@@ -144,17 +144,17 @@ ul li.active:hover {
 .grid span.asc,
 .grid span.desc {
     margin: 2px;
-    visibility: hidden;
+    display: none;
     line-height: 15px;
     vertical-align: middle;
 }
 
 .grid th[data-sortasc=true] span.asc {
-    visibility: visible;
+    display: inline;
 }
 
 .grid th[data-sortasc=false] span.desc {
-    visibility: visible;
+        display: inline;
 }
 
 .grid th:first-child {

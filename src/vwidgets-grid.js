@@ -734,6 +734,16 @@
                     this._renderMobileDesktop();
                 }
             });
+
+
+            $(window).on('resize', $.proxy(function(){
+                 //check if overflow needs to be setup for grid container
+                if (this.element.find('.' + this.options.css.table + '').width() > this.element.find('.gridcontainer').width()) {
+                    this.element.find('.gridcontainer').css('overflow-x', 'scroll');
+                }else{
+                    this.element.find('.gridcontainer').removeAttr('style');
+                }
+            },this));
         },
         refresh: function () {
 
