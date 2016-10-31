@@ -81,6 +81,8 @@
                 if (this._privateData.renderedPagination) {
                     if (this.element.find('input.searchtextfield').val() !== "") {
                         this._searchText(this.element.find('input.searchtextfield').val());
+                    }else {
+                        this.options.data = data;
                     }
                     this._renderPagination();
                     this._renderRows();
