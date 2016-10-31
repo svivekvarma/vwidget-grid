@@ -27,7 +27,7 @@
     }
 } (function ($) {
 
-    $.widget("vwidgets.vgrid", {
+    $.widget("vwidgets.vGrid", {
         options: {
             data: [],
             emptyDataMessage: "No data available to show",
@@ -51,6 +51,7 @@
             showPagination: true,
             paginationPageSize: 5,
             pageSize: 5,
+            customPageSize: true,
             showSearchOption: true,
             showPrintOption: true,
             showCsvOption: true,
@@ -97,7 +98,9 @@
             if (this._privateData.headers.length > 0) {
                 if (this.options.showPagination) {
                     this._renderPagination();
+                    this.element.append(this._renderCustomPageSize());
                 }
+
                 var arrHTML = [];
                 if (this.options.showSearchOption) {
 
@@ -158,6 +161,25 @@
             } else {
                 this._privateData.headers = this.options.showOnlyFields;
             }
+        },
+        _renderCustomPageSize: function () {
+            var arrHTML = [];
+            arrHTML.push('<select name="custompagesize">');
+            arrHTML.push('<option value="-1">Pick one</option>');
+            if (this.options.data.length > 5) {
+                arrHTML.push('<option value="5">5</option>');
+            }
+            if (this.options.data.length > 10) {
+                arrHTML.push('<option value="10">10</option>');
+            }
+
+            if (this.options.data.length > 25) {
+                arrHTML.push('<option value="25">25</option>');
+            }
+
+            arrHTML.push('<option value="0">All</option>');
+            arrHTML.push('</select>');
+            return arrHTML.join('');
         },
         _renderPagination: function () {
 
@@ -735,15 +757,40 @@
                 }
             });
 
+            // custom page size event binding
 
-            $(window).on('resize', $.proxy(function(){
-                 //check if overflow needs to be setup for grid container
+            this._on(this.element, {
+                "change select": function (event) {
+                    event.stopImmediatePropagation();
+                    var pagesize = parseInt($(event.currentTarget).val());
+                    if (pagesize > 0) {
+                        if (pagesize > this.options.data.length) {
+                            this.options.pageSize = this.options.data.length;
+                        } else {
+                            this.options.pageSize = pagesize;
+                        }
+                    }
+
+                    if (pagesize === 0) {
+                        this.options.pageSize = this.options.data.length;
+                    }
+                    this._privateData.currentBlock = 1;
+                    this._privateData.currentPage = 1;
+                    this._calculatePagesBlocks();
+                    this._renderPagination();
+                    this._renderMobileDesktop();
+                }
+            });
+
+
+            $(window).on('resize', $.proxy(function () {
+                //check if overflow needs to be setup for grid container
                 if (this.element.find('.' + this.options.css.table + '').width() > this.element.find('.gridcontainer').width()) {
                     this.element.find('.gridcontainer').css('overflow-x', 'scroll');
-                }else{
+                } else {
                     this.element.find('.gridcontainer').removeAttr('style');
                 }
-            },this));
+            }, this));
         },
         refresh: function () {
 

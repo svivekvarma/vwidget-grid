@@ -12,6 +12,11 @@ body {
     color: #444;
 }
 
+.vwidgetsgrid select{
+    margin: 6px 5px;
+    padding: 7px;
+}
+
 .tablerenderpagination {
     display: inline-block;
     margin: 5px auto;

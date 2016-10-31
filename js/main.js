@@ -4,9 +4,9 @@ $(function () {
     $.getJSON('js/data.json').done(function (data) {
         globaldata = data;
        
-        $('#sample1').vgrid({ data: data.fathers, showOnlyMode: false, showOnlyFields: ["id"] });
+        $('#sample1').vGrid({ data: data.fathers, showOnlyMode: false, showOnlyFields: ["id"] });
 
-        $('#sample2').vgrid({
+        $('#sample2').vGrid({
             data: data.fathers,
             showOnlyMode: true,
             showOnlyFields: ["accounts", "spousename", "married"],
@@ -35,7 +35,7 @@ $(function () {
         })
         globaldata.fathers.splice(foundindex, 1);
         //console.log(globaldata.fathers.length);
-        $('#sample2').vgrid('option', 'data', globaldata.fathers);
+        $('#sample2').vGrid('option', 'data', globaldata.fathers);
 
     });
 
@@ -43,6 +43,6 @@ $(function () {
       
         globaldata.fathers.pop();
       
-        $('#sample1').vgrid('option', 'data', globaldata.fathers);
+        $('#sample1').vGrid('option', 'data', globaldata.fathers);
     })
 })
