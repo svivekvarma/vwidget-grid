@@ -14,6 +14,11 @@
      display: block;
  }
 
+ 
+ .searchsection input{
+     width: 80%;
+ }
+
  .tablerenderpagination{
      display: block;
      clear:both;

@@ -1,4 +1,3 @@
-
 (function (factory) {
     if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
@@ -75,21 +74,21 @@
             this._renderMobile();
         },
         _setOption: function (key, value) {
+            this._super(key, value);
             if (key === "data") {
+                this.element.html('');
                 this._privateData.originalData = value;
                 this._calculatePagesBlocks();
-                if (this._privateData.renderedPagination) {
-                    if (this.element.find('input.searchtextfield').val() !== "") {
-                        this._searchText(this.element.find('input.searchtextfield').val());
-                    }else {
-                        this.options.data = data;
-                    }
-                    this._renderPagination();
-                    this._renderRows();
+                this._extractHeaders();
+                this._renderDeskTop();
+                this._renderMobile();
+                
+                //if (this._privateData.renderedPagination) {
+                if (this.element.find('input.searchtextfield').val() && this.element.find('input.searchtextfield').val() !== "") {
+                    this._searchText(this.element.find('input.searchtextfield').val());
                 }
-                // do something when data is set
+               
             }
-            this._super(key, value);
         },
         _setOptions: function (options) {
             this._super(options);
@@ -187,11 +186,7 @@
 
             if (this.options.showPagination) {
                 var arrPagination = [];
-
-                if (this.options.data.length <= 0) {
-                    this.element.find('.tablerenderpagination').find('ul').html('');
-                    return;
-                }
+                
                 if (!this._privateData.renderedPagination) {
                     arrPagination.push('<div class=tablerenderpagination>');
                     arrPagination.push('<ul>');
@@ -200,6 +195,12 @@
                     this.element.append(arrPagination.join(''));
                     arrPagination = [];
                 }
+                
+                if (this.options.data.length <= 0) {
+                    this.element.find('.tablerenderpagination').find('ul').html('');
+                    return;
+                }
+
                 // render the page number based on block logic
                 var startpage;
                 var endpage;
@@ -304,11 +305,7 @@
                 }
 
 
-            } else {
-                arrHTML.push(' <th>');
-                arrHTML.push(this.options.emptyDataMessage);
-                arrHTML.push('</th>');
-            }
+            } 
 
             arrHTML.push(' </thead>');
             arrHTML.push(' <tbody>');
