@@ -17,13 +17,13 @@ body {
     padding: 7px;
 }
 
-.tablerenderpagination {
+.paginationcontainer {
     display: inline-block;
     margin: 5px auto;
     float: left;
 }
 
-.tablerenderpagination ul {
+.paginationcontainer ul {
     list-style: none;
     display: inline-block;
     margin: 0px;
@@ -33,23 +33,23 @@ body {
     color: #666a6c;
 }
 
-.tablerenderpagination ul li {
+.paginationcontainer ul li {
     float: left;
     padding: 8px;
     border-right: 1px solid #b4babf;
     cursor: pointer;
 }
 
-.tablerenderpagination ul li.active,
+.paginationcontainer ul li.active,
 ul li.active:hover {
     background-color: #CED8DE;
 }
 
-.tablerenderpagination ul li:last-child {
+.paginationcontainer ul li:last-child {
     border-right: none;
 }
 
-.tablerenderpagination ul li:hover {
+.paginationcontainer ul li:hover {
     background-color: #C2E0F2;
 }
 

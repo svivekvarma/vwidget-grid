@@ -68,10 +68,20 @@
                 headers: []
             }
             this._privateData.originalData = this.options.data;
+            this._scaffold();
             this._calculatePagesBlocks();
             this._extractHeaders();
             this._renderDeskTop();
             this._renderMobile();
+        },
+        _scaffold: function () {
+            this.element.append('<div class="paginationcontainer"></div>');
+            this.element.append('<div class="custompagesizecontainer"></div>');
+            this.element.append('<div class="exportoptions"></div>');
+            this.element.append('<div class="searchsection"></div>');
+            this.element.append('<div class="gridcontainer"></div>');
+            this.element.append('<div class="gridlistcontainer">');
+            this.element.append('<div class="displayrecordsinfo">');
         },
         _setOption: function (key, value) {
             this._super(key, value);
@@ -82,12 +92,12 @@
                 this._extractHeaders();
                 this._renderDeskTop();
                 this._renderMobile();
-                
+
                 //if (this._privateData.renderedPagination) {
                 if (this.element.find('input.searchtextfield').val() && this.element.find('input.searchtextfield').val() !== "") {
                     this._searchText(this.element.find('input.searchtextfield').val());
                 }
-               
+
             }
         },
         _setOptions: function (options) {
@@ -99,47 +109,20 @@
             if (this._privateData.headers.length > 0) {
                 if (this.options.showPagination) {
                     this._renderPagination();
-                    this.element.append(this._renderCustomPageSize());
+                    this._renderCustomPageSize();
                 }
-
-                var arrHTML = [];
-                if (this.options.showSearchOption) {
-
-                    arrHTML.push('<div class="searchsection"><label>Search </label><input type="search" class="searchtextfield" placeholder="Filter your results by typing search text"/></div>');
-                    //arrHTML.push('<div class="clearboth"></div>');
-                }
-                if (this.options.showPrintOption || this.options.showExportOptions) {
-                    arrHTML.push('<div class="exportoptions">');
-                    if (this.options.showPrintOption) {
-                        arrHTML.push('<div class="icon printicon">');
-
-                        arrHTML.push('</div>');
-                    }
-                    if (this.options.showCsvOption) {
-                        arrHTML.push('<div class="icon downloadicon">');
-
-                        arrHTML.push('</div>');
-                    }
-                    arrHTML.push('</div>');
-                }
-                arrHTML = arrHTML.concat(this._generateTable());
-                this.element.append(arrHTML.join(''));
-
+                this._renderSearchandExportOption();
+                this._generateTable();                
                 //check if overflow needs to be setup for grid container
                 if (this.element.find('.' + this.options.css.table + '').width() > this.element.find('.gridcontainer').width()) {
                     this.element.find('.gridcontainer').css('overflow-x', 'scroll');
                 }
-
                 // Add event binding here
                 this._bindEvents();
-
             }
         },
         _renderMobile: function () {
             var arrHTML = [];
-            arrHTML.push('<div class="gridlistcontainer">');
-            arrHTML.push('</div>');
-            this.element.append(arrHTML.join(''));
             this.element.find('.gridlistcontainer').html(this._generateList(false).join(''));
         },
         _extractHeaders: function () {
@@ -163,6 +146,25 @@
                 this._privateData.headers = this.options.showOnlyFields;
             }
         },
+        _renderSearchandExportOption: function () {
+            if (this.options.showSearchOption) {
+                this.element.find('.searchsection').html('<label>Search </label><input type="search" class="searchtextfield" placeholder="Filter your results by typing search text"/>');
+            }
+            var arrHTML =[];
+            if (this.options.showPrintOption || this.options.showExportOptions) {
+
+                if (this.options.showPrintOption) {
+                    arrHTML.push('<div class="icon printicon">');
+
+                    arrHTML.push('</div>');
+                }
+                if (this.options.showCsvOption) {
+                    arrHTML.push('<div class="icon downloadicon">');
+                    arrHTML.push('</div>');
+                }
+            }
+            this.element.find('.exportoptions').html(arrHTML.join(''));
+        },
         _renderCustomPageSize: function () {
             var arrHTML = [];
             arrHTML.push('<select name="custompagesize">');
@@ -180,24 +182,22 @@
 
             arrHTML.push('<option value="0">All</option>');
             arrHTML.push('</select>');
-            return arrHTML.join('');
+            this.element.find('.custompagesizecontainer').html(arrHTML.join(''));
         },
         _renderPagination: function () {
 
             if (this.options.showPagination) {
                 var arrPagination = [];
-                
+
                 if (!this._privateData.renderedPagination) {
-                    arrPagination.push('<div class=tablerenderpagination>');
                     arrPagination.push('<ul>');
                     arrPagination.push('</ul>');
-                    arrPagination.push('</div>');
-                    this.element.append(arrPagination.join(''));
+                    this.element.find('.paginationcontainer').html(arrPagination.join(''));
                     arrPagination = [];
                 }
-                
+
                 if (this.options.data.length <= 0) {
-                    this.element.find('.tablerenderpagination').find('ul').html('');
+                    this.element.find('.paginationcontainer').find('ul').html('');
                     return;
                 }
 
@@ -218,7 +218,7 @@
                     }
                 }
                 arrPagination.push('<li class="paginationpage"><a>' + ">>" + '</a></li>');
-                this.element.find('.tablerenderpagination').find('ul').html(arrPagination.join(''));
+                this.element.find('.paginationcontainer').find('ul').html(arrPagination.join(''));
                 this._privateData.renderedPagination = true;
             }
         },
@@ -305,7 +305,7 @@
                 }
 
 
-            } 
+            }
 
             arrHTML.push(' </thead>');
             arrHTML.push(' <tbody>');
@@ -379,7 +379,7 @@
                 arrHTML.push('</div>');
             }
             arrHTML.push(' </div>');
-            return arrHTML;
+            this.element.find('.gridlistcontainer').html(arrHTML.join(''));
         },
         _renderRows: function () {
             this.element.find('.' + this.options.css.table + ':first')
@@ -641,7 +641,7 @@
 
                     if (!($(event.currentTarget).attr('data-realname') === "amalgated")) {
                         this._privateData.sortField = $(event.currentTarget).attr('data-realname');
-                        this.element.find('.tablerenderpagination > ul > li').removeClass('active');
+                        this.element.find('.paginationcontainer > ul > li').removeClass('active');
                         this._privateData.currentBlock = 1;
                         this._privateData.currentPage = 1;
                         this._renderPagination();
@@ -731,7 +731,7 @@
                     event.stopImmediatePropagation();
 
                     var pagenum = $(event.currentTarget).text();
-                    this.element.find('.tablerenderpagination > ul > li').removeClass('active');
+                    this.element.find('.paginationcontainer > ul > li').removeClass('active');
                     if (!(pagenum === "<<" || pagenum === ">>")) {
                         this._privateData.currentPage = parseInt(pagenum, 10);
                         $(event.currentTarget).addClass('active');
