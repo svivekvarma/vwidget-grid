@@ -61,6 +61,10 @@ ul li.active:hover {
     text-align: center;
 }
 
+.custompagesizecontainer{
+    display: inline-block;
+}
+
 .searchsection {
     display: inline-block;
     float: right;
@@ -95,6 +99,15 @@ ul li.active:hover {
     cursor: pointer;
     background-repeat: no-repeat;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+.displayrecordsinfo{
+    font-style: italic;
+    font-weight: bold;
+    font-size: 12px;
+    padding: 5px;
+    width: 100%;
+    text-align: center;
 }
 
 .printicon {
@@ -142,25 +155,23 @@ ul li.active:hover {
 }
 
 .grid .sortindicator {
-    float: right;
-    font-size: 8px;
+       font-size: 8px;
     font-weight: bold;
+    display: block;
+    color: #8b8d8f;
 }
 
-.grid span.asc,
-.grid span.desc {
-    margin: 2px;
-    display: none;
-    line-height: 15px;
-    vertical-align: middle;
+.sortersymbols{
+    display: inline-block;
+    float: right;
 }
 
-.grid th[data-sortasc=true] span.asc {
-    display: inline;
+.grid span.asc.active{
+    color: white;
 }
 
-.grid th[data-sortasc=false] span.desc {
-        display: inline;
+.grid span.desc.active {
+    color: white;
 }
 
 .grid th:first-child {

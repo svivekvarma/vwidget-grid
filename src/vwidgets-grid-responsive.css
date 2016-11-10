@@ -15,11 +15,11 @@
  }
 
  
- .searchsection input{
+ .searchsection .searchtextfield {
      width: 80%;
  }
 
- .paginationcontainer{
+ .custompagesizecontainer, .paginationcontainer{
      display: block;
      clear:both;
      margin: 0 auto;
