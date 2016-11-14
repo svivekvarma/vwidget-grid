@@ -9,7 +9,7 @@ $(function () {
         $('#sample2').vGrid({
             data: data.fathers,
             showOnlyMode: true,
-            showOnlyFields: ["accounts", "spousename", "married"],
+            showOnlyFields: ["id","name","email","dateofbirth","biography","comments","accounts", "spousename", "married"],
             amalgateColumns: [{
                 prepend: false,
                 columnHeader: "Special",

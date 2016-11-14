@@ -169,7 +169,7 @@
             var recordinfo = this._calculateStartEndRecords(false);
             recordinfo.startrecord = recordinfo.startrecord + 1;
             recordinfo.endrecord = recordinfo.endrecord + 1;
-            this.element.find('.displayrecordsinfo').html('Showing records ' + recordinfo.startrecord + ' to ' + recordinfo.endrecord + ' of ' + this.options.data.length + " records" );
+            this.element.find('.displayrecordsinfo').html('Showing records ' + recordinfo.startrecord + ' to ' + recordinfo.endrecord + ' of ' + this.options.data.length + " records");
         },
         _renderSearchandExportOption: function () {
             if (this.options.showSearchOption) {
@@ -291,6 +291,7 @@
                 if (this.options.showOnlyMode) {
                     for (var i = 0; i < this.options.showOnlyFields.length; i++) {
                         arrHTML.push(' <th data-realname="' + this.options.showOnlyFields[i] + '">');
+                        arrHTML.push('<div>');
                         arrHTML.push(this._headerOutput(this.options.showOnlyFields[i]));
                         arrHTML.push('<div class="sortersymbols">');
                         if (this._privateData.sortField === this.options.showOnlyFields[i] && this._privateData.sortOrder) {
@@ -305,16 +306,29 @@
                         }
 
                         arrHTML.push('</div>');
+                        arrHTML.push('</div>');
                         arrHTML.push('</th>');
                     }
                 } else {
                     if (this._privateData.headers.length > 0) {
                         for (var i = 0; i < this._privateData.headers.length; i++) {
                             arrHTML.push(' <th data-realname="' + this._privateData.headers[i] + '">');
+                            arrHTML.push('<div>');
                             arrHTML.push(this._headerOutput(this._privateData.headers[i]));
                             arrHTML.push('<div class="sortersymbols">');
-                            arrHTML.push('<span class="sortindicator asc">&#9650;</span>');
-                            arrHTML.push('<span class="sortindicator desc">&#9660;</span>');
+                            if (this._privateData.sortField === this._privateData.headers[i] && this._privateData.sortOrder) {
+                                arrHTML.push('<span class="sortindicator asc active">&#9650;</span>');
+                            } else {
+                                arrHTML.push('<span class="sortindicator asc">&#9650;</span>');
+                            }
+
+                            if (this._privateData.sortField === this.options.headers[i] && !this._privateData.sortOrder) {
+                                arrHTML.push('<span class="sortindicator desc active">&#9660;</span>');
+                            } else {
+                                arrHTML.push('<span class="sortindicator desc">&#9660;</span>');
+                            }
+
+                            arrHTML.push('</div>');
                             arrHTML.push('</div>');
                             arrHTML.push('</th>');
                         }
@@ -544,6 +558,9 @@
             }
             return field;
         },
+        _sampleContentLength: function () {
+
+        },
         _convertToCSV: function convertArrayOfObjectsToCSV(args) {
             var result, ctr, keys, columnDelimiter, lineDelimiter, data;
             data = this.options.data;
@@ -592,12 +609,12 @@
                         if (j > 0) {
                             result += columnDelimiter;
                         }
-                        try{
-                            result += this._fieldOutput(this.options.data[i][this.options.showOnlyFields[j]], this.options.showOnlyFields[j], this.options.data[i]);    
-                        }catch(exception){
-                            console.log("error at" + i + " --- " + j  );
+                        try {
+                            result += this._fieldOutput(this.options.data[i][this.options.showOnlyFields[j]], this.options.showOnlyFields[j], this.options.data[i]);
+                        } catch (exception) {
+                            console.log("error at" + i + " --- " + j);
                         }
-                        
+
                     }
                 } else {
                     for (var j = 0; j < this._privateData.headers.length; j++) {
@@ -672,11 +689,11 @@
             // sort field binding
 
             this._on(this.element, {
-                "click th > div.sortersymbols > span": function (event) {
+                "click th": function (event) {
                     event.stopImmediatePropagation();
 
                     if (!($(event.currentTarget).attr('data-realname') === "amalgated")) {
-                        var sortField = $(event.currentTarget).parent().parent().attr('data-realname');
+                        var sortField = $(event.currentTarget).attr('data-realname');
                         if (!this._privateData.sortField === sortField) {
                             this._privateData.sortOrder = true;
                         } else {

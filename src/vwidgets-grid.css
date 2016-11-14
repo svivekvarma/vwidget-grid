@@ -152,6 +152,7 @@ ul li.active:hover {
     white-space: nowrap;
     text-overflow: ellipsis;
     text-align: left;
+    min-width:90px;
 }
 
 .grid .sortindicator {
