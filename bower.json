@@ -1,0 +1,25 @@
+{
+  "name": "vwidget-grid",
+  "description": "A simple grid plugin to render data responsively and has native and bootstrap plugins built in",
+  "main": "index.js",
+  "authors": [
+    "Vivek Siruvuri"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "grid",
+    "plugin",
+    "jquery",
+    "widget",
+    "factory",
+    "responsive"
+  ],
+  "homepage": "https://github.com/svivekvarma/vwidget-grid",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
