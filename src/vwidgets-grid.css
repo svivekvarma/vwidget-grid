@@ -152,7 +152,6 @@ ul li.active:hover {
     white-space: nowrap;
     text-overflow: ellipsis;
     text-align: left;
-    min-width:90px;
 }
 
 .grid .sortindicator {
@@ -167,11 +166,24 @@ ul li.active:hover {
     float: right;
 }
 
+.grid span.asc{
+   
+    display: none;
+}
+
+.grid span.desc{
+   
+    display: none;
+}
+
+
 .grid span.asc.active{
+    display: inline-block;
     color: white;
 }
 
 .grid span.desc.active {
+    display: inline-block;
     color: white;
 }
 
