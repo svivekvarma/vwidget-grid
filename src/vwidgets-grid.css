@@ -92,8 +92,8 @@ ul li.active:hover {
 
 .exportoptions .icon {
     display: inline-block;
-    width: 32px;
-    height: 30px;
+    width: 25px;
+    height: 32px;
     vertical-align: middle;
     margin: 0px 5px;
     cursor: pointer;
@@ -110,12 +110,12 @@ ul li.active:hover {
     text-align: center;
 }
 
-.printicon {
+.pdficon {
     background: url('./images/tablerender.png') 0px 0px;
 }
 
 .downloadicon {
-    background: url('./images/tablerender.png') 0px -37px;
+    background: url('./images/tablerender.png') 0px -35px;
 }
 
 .gridcontainer{
