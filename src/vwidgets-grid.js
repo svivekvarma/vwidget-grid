@@ -635,8 +635,6 @@
         },
         _convertToPdfVisualData: function () {
 
-
-           
             var i = 0;
             var rows = [];
             for (i = 0; i < this.options.data.length; i++) {
@@ -653,7 +651,13 @@
                 rows.push(row);
             }
             var doc = new jsPDF('p', 'pt');
-            doc.autoTable( this._privateData.headers, rows);
+            //doc.autoTable(this._privateData.headers, rows);
+
+            doc.autoTable(this._privateData.headers, rows, {
+                margin: { horizontal: 10 },
+                styles: { overflow: 'linebreak' },
+                bodyStyles: { valign: 'top' }
+            });
             doc.save("export.pdf");
         },
         _customSort: function (property, type) {
