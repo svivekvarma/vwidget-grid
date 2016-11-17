@@ -54,6 +54,7 @@
             showSearchOption: true,
             showPrintOption: false,
             showCsvOption: true,
+            showPDFOption: true,
             showExportOptions: true
         },
         _create: function () {
@@ -185,6 +186,10 @@
                 }
                 if (this.options.showCsvOption) {
                     arrHTML.push('<div class="icon downloadicon">');
+                    arrHTML.push('</div>');
+                }
+                if (this.options.showPDFOption) {
+                    arrHTML.push('<div class="icon pdficon">');
                     arrHTML.push('</div>');
                 }
             }
@@ -628,6 +633,29 @@
             }
             return result;
         },
+        _convertToPdfVisualData: function () {
+
+
+           
+            var i = 0;
+            var rows = [];
+            for (i = 0; i < this.options.data.length; i++) {
+                var row = [];
+                if (this.options.showOnlyMode) {
+                    for (var j = 0; j < this.options.showOnlyFields.length; j++) {
+                        row.push(this._fieldOutput(this.options.data[i][this.options.showOnlyFields[j]], this.options.showOnlyFields[j], this.options.data[i]));
+                    }
+                } else {
+                    for (var j = 0; j < this._privateData.headers.length; j++) {
+                        row.push(this._fieldOutput(this.options.data[i][this._privateData.headers[j]], this._privateData.headers[j], this.options.data[i]));
+                    }
+                }
+                rows.push(row);
+            }
+            var doc = new jsPDF('p', 'pt');
+            doc.autoTable( this._privateData.headers, rows);
+            doc.save("export.pdf");
+        },
         _customSort: function (property, type) {
             var sortOrder = 1;
             if (property[0] === "-") {
@@ -739,6 +767,8 @@
                 }
             });
 
+
+
             // Bind csv events 
 
             this._on(this.element, {
@@ -781,6 +811,18 @@
                         }, 333);
                         return true;
                     }
+                }
+            });
+
+            // pdf events 
+
+            this._on(this.element, {
+                "click .pdficon": function (event) {
+                    event.stopImmediatePropagation();
+
+                    var data, link;
+                    //var csv = this._convertToCSV();
+                    var pdf = this._convertToPdfVisualData();
                 }
             });
 
