@@ -578,8 +578,19 @@
             lineDelimiter = lineDelimiter || '\n';
             keys = Object.keys(data[0]);
 
+             var m = 0 ;
+            tempHeader = [];
+
+            for(m=0; m< keys.length; m++){
+                if(keys[m] == "ID"){
+                    tempHeader.push("idx");
+                }else{
+                    tempHeader.push(keys[m]);
+                }
+            }
+
             result = '';
-            result += keys.join(columnDelimiter);
+            result += tempHeader.join(columnDelimiter);
             result += lineDelimiter;
 
             data.forEach(function (item) {
@@ -603,8 +614,19 @@
                 return null;
             }
 
+            var m = 0 ;
+            tempHeader = [];
+
+            for(m=0; m< this._privateData.headers.length; m++){
+                if(this._privateData.headers[m] == "ID"){
+                    tempHeader.push("idx");
+                }else{
+                    tempHeader.push(this._privateData.headers[m]);
+                }
+            }
+
             result = '';
-            result += this._privateData.headers.join(columnDelimiter);
+            result += tempHeader.join(columnDelimiter);
             result += lineDelimiter;
             var i = 0;
             for (i = 0; i < this.options.data.length; i++) {

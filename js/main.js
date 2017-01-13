@@ -9,13 +9,13 @@ $(function () {
         $('#sample2').vGrid({
             data: data.fathers,
             showOnlyMode: true,
-            showOnlyFields: ["id","name","email","dateofbirth","biography","comments","accounts", "spousename", "married"],
+            showOnlyFields: ["ID","name","email","dateofbirth","biography","comments","accounts", "spousename", "married"],
             amalgateColumns: [{
                 prepend: false,
                 columnHeader: "Special",
                 template: function (record, index) {
 
-                    return '<input type="button" value="Submit" data-id="' + record.id + '"/>';
+                    return '<input type="button" value="Submit" data-id="' + record.ID + '"/>';
                 }
             }]
         });
@@ -41,7 +41,7 @@ $(function () {
         var foundindex = 0;
 
         $.each(globaldata.fathers, function (i, n) {
-            if (n.id === index) {
+            if (n.ID === index) {
                 foundindex = i;
             }
         })
