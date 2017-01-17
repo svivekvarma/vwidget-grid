@@ -54,7 +54,7 @@
             showSearchOption: true,
             showPrintOption: false,
             showCsvOption: true,
-            showPDFOption: true,
+            showPDFOption: false,
             showExportOptions: true
         },
         _create: function () {
