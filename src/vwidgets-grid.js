@@ -100,7 +100,11 @@
                 if (this.element.find('input.searchtextfield').val() && this.element.find('input.searchtextfield').val() !== "") {
                     this._searchText(this.element.find('input.searchtextfield').val());
                 } else {
-                    this._refresh();
+                    if(this._privateData.sortField !== null ||    this._privateData.sortField !== ""){
+                        this._sort();
+                    }else{
+                        this._refresh();
+                    }
                 }
             }
         },
