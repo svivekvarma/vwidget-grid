@@ -24,7 +24,7 @@
         // Browser globals
         factory(jQuery);
     }
-} (function ($) {
+}(function ($) {
 
     $.widget("vwidgets.vGrid", {
         options: {
@@ -46,6 +46,7 @@
             amalgateColumns: [],
             datefields: [],
             datetimefields: [],
+            sortField: "",
             rowEvents: function () { },
             showPagination: true,
             paginationPageSize: 5,
@@ -68,11 +69,17 @@
                 dataconfiguration: {},
                 headers: []
             }
+            
             this._privateData.originalData = this.options.data;
             this._scaffold();
             this._newDataCalculations();
             this._renderDeskTop();
             this._renderMobile();
+
+            if (this.options.sortField !== "") {
+                this.element.find('th[data-realname=' + this.options.sortField + ']').trigger("click");
+            }
+
         },
         _scaffold: function () {
             this.element.append('<div class="paginationcontainer"></div>');
@@ -578,13 +585,13 @@
             lineDelimiter = lineDelimiter || '\n';
             keys = Object.keys(data[0]);
 
-             var m = 0 ;
+            var m = 0;
             tempHeader = [];
 
-            for(m=0; m< keys.length; m++){
-                if(keys[m] == "ID"){
+            for (m = 0; m < keys.length; m++) {
+                if (keys[m] == "ID") {
                     tempHeader.push("idx");
-                }else{
+                } else {
                     tempHeader.push(keys[m]);
                 }
             }
@@ -614,13 +621,13 @@
                 return null;
             }
 
-            var m = 0 ;
+            var m = 0;
             tempHeader = [];
 
-            for(m=0; m< this._privateData.headers.length; m++){
-                if(this._privateData.headers[m] == "ID"){
+            for (m = 0; m < this._privateData.headers.length; m++) {
+                if (this._privateData.headers[m] == "ID") {
                     tempHeader.push("idx");
-                }else{
+                } else {
                     tempHeader.push(this._privateData.headers[m]);
                 }
             }
