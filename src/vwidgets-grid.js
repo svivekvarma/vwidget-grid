@@ -69,7 +69,7 @@
                 dataconfiguration: {},
                 headers: []
             }
-            
+
             this._privateData.originalData = this.options.data;
             this._scaffold();
             this._newDataCalculations();
@@ -100,9 +100,9 @@
                 if (this.element.find('input.searchtextfield').val() && this.element.find('input.searchtextfield').val() !== "") {
                     this._searchText(this.element.find('input.searchtextfield').val());
                 } else {
-                    if(this._privateData.sortField !== null ||    this._privateData.sortField !== ""){
+                    if (this._privateData.sortField !== null || this._privateData.sortField !== "") {
                         this._sort();
-                    }else{
+                    } else {
                         this._refresh();
                     }
                 }
@@ -578,7 +578,7 @@
 
         },
         _convertToCSV: function convertArrayOfObjectsToCSV(args) {
-            var result, ctr, keys, columnDelimiter, lineDelimiter, data;
+            var result, ctr, keys, columnDelimiter, lineDelimiter, data, tempFieldResult;
             data = this.options.data;
 
             if (data == null || !data.length) {
@@ -610,6 +610,12 @@
                     if (ctr > 0) result += columnDelimiter;
 
                     result += item[key];
+
+                    tempFieldResult = '';
+                    tempFieldResult = item[key];
+                    tempFieldResult = tempFieldResult.replace(/,/g, '');
+                    result += tempFieldResult;
+
                     ctr++;
                 });
                 result += lineDelimiter;
@@ -617,7 +623,7 @@
             return result;
         },
         _convertToCSVVisualData: function () {
-            var result, ctr, columnDelimiter, lineDelimiter;
+            var result, ctr, columnDelimiter, lineDelimiter, tempFieldResult;
             columnDelimiter = columnDelimiter || ',';
             lineDelimiter = lineDelimiter || '\n';
 
@@ -637,6 +643,7 @@
             }
 
             result = '';
+            tempFieldResult = '';
             result += tempHeader.join(columnDelimiter);
             result += lineDelimiter;
             var i = 0;
@@ -648,7 +655,15 @@
                             result += columnDelimiter;
                         }
                         try {
-                            result += this._fieldOutput(this.options.data[i][this.options.showOnlyFields[j]], this.options.showOnlyFields[j], this.options.data[i]);
+
+                            tempFieldResult = '';
+                            tempFieldResult = this._fieldOutput(this.options.data[i][this.options.showOnlyFields[j]], this.options.showOnlyFields[j], this.options.data[i]);
+                            if ($.type(tempFieldResult) === "string") {
+                                tempFieldResult = tempFieldResult.replace(/,/g, '');
+                                result += tempFieldResult;
+                            } else {
+                                result += this._fieldOutput(this.options.data[i][this.options.showOnlyFields[j]], this.options.showOnlyFields[j], this.options.data[i]);
+                            }
                         } catch (exception) {
                             console.log("error at" + i + " --- " + j);
                         }
@@ -659,7 +674,15 @@
                         if (j > 0) {
                             result += columnDelimiter;
                         }
-                        result += this._fieldOutput(this.options.data[i][this._privateData.headers[j]], this._privateData.headers[j], this.options.data[i]);
+
+                        tempFieldResult = '';
+                        tempFieldResult = this._fieldOutput(this.options.data[i][this._privateData.headers[j]], this._privateData.headers[j], this.options.data[i]);
+                        if ($.type(tempFieldResult) === "string") {
+                            tempFieldResult = tempFieldResult.replace(/,/g, '');
+                            result += tempFieldResult;
+                        } else {
+                            result += this._fieldOutput(this.options.data[i][this._privateData.headers[j]], this._privateData.headers[j], this.options.data[i]);
+                        }
                     }
                 }
                 result += lineDelimiter;

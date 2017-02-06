@@ -22,9 +22,9 @@ $(function () {
         });
     });
 
-    setTimeout(function(){
+  /*  setTimeout(function(){
           globaldata.fathers = globaldata.fathers.splice(1,5);
           $('#sample2').vGrid('option', 'data', globaldata.fathers);
     },4000)
-
+*/
 })
