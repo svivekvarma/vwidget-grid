@@ -10,6 +10,7 @@ $(function () {
             data: data.fathers,
             showOnlyMode: true,
             sortField: "email",
+            sortFieldType: "string",
             showOnlyFields: ["ID","name","email","dateofbirth","biography","comments","accounts", "spousename", "married"],
             amalgateColumns: [{
                 prepend: false,

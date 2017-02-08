@@ -47,6 +47,7 @@
             datefields: [],
             datetimefields: [],
             sortField: "",
+            sortFieldType: "",
             rowEvents: function () { },
             showPagination: true,
             paginationPageSize: 5,
@@ -67,7 +68,8 @@
                 totalPages: 0,
                 totalBlocks: 0,
                 dataconfiguration: {},
-                headers: []
+                headers: [],
+                fieldType: []
             }
 
             this._privateData.originalData = this.options.data;
@@ -168,6 +170,9 @@
                             });
                             if (result.length === 0) {
                                 headers.push(key);
+                                var tempObj = {};
+                                tempObj[key] =  typeof obj[key];
+                                this._privateData.fieldType.push(tempObj);
                             }
                         }
                     }
@@ -175,7 +180,21 @@
                 this._privateData.headers = headers;
             } else {
                 this._privateData.headers = this.options.showOnlyFields;
+                 if (this.options.data.length > 0) {
+                    var obj = this.options.data[0];
+                    var i = 0, field;
+                    for(i=0; i< this.options.showOnlyFields.length; i++){
+                        
+                        field = this.options.showOnlyFields[i];
+                        var tempObj = {};
+                        tempObj[field] = typeof obj[this.options.showOnlyFields[i]];
+                        this._privateData.fieldType.push(tempObj);
+                    } 
+                 }
             }
+        },
+        _getFieldType: function(data){
+            return typeof data;
         },
         _renderDisplayRecordsInfo: function () {
             var recordinfo = this._calculateStartEndRecords(false);
@@ -288,6 +307,16 @@
             }
             return { startpage: startpage, endpage: endpage };
         },
+        _getFieldType: function(field){
+            var i =0, type;
+            for(i = 0; i< this._privateData.fieldType.length; i++){
+                if(this._privateData.fieldType[i][field]){
+                    type = this._privateData.fieldType[i][field];
+                    break;
+                }
+            }
+            return type;
+        },
         _generateTable: function (exportmode) {
             var arrHTML = [];
 
@@ -306,7 +335,8 @@
                 }
                 if (this.options.showOnlyMode) {
                     for (var i = 0; i < this.options.showOnlyFields.length; i++) {
-                        arrHTML.push(' <th data-realname="' + this.options.showOnlyFields[i] + '">');
+
+                        arrHTML.push(' <th data-realname="' + this.options.showOnlyFields[i] + '" data-fieldType="' + this._getFieldType(this.options.showOnlyFields[i]) +'">');
                         arrHTML.push('<div>');
                         arrHTML.push(this._headerOutput(this.options.showOnlyFields[i]));
                         arrHTML.push('<div class="sortersymbols">');
@@ -328,7 +358,7 @@
                 } else {
                     if (this._privateData.headers.length > 0) {
                         for (var i = 0; i < this._privateData.headers.length; i++) {
-                            arrHTML.push(' <th data-realname="' + this._privateData.headers[i] + '">');
+                            arrHTML.push(' <th data-realname="' + this._privateData.headers[i] + '" data-fieldType="' + this._getFieldType(this._privateData.headers[i]) +'">');
                             arrHTML.push('<div>');
                             arrHTML.push(this._headerOutput(this._privateData.headers[i]));
                             arrHTML.push('<div class="sortersymbols">');
@@ -722,6 +752,7 @@
                 sortOrder = -1;
                 property = property.substr(1, property.length - 1);
             }
+
             if (type) {
                 if (type === "string") {
                     return function (a, b) {
@@ -741,9 +772,9 @@
                 }
             }
         },
-        _sort: function () {
+        _sort: function (type) {
             var sortstring = this._privateData.sortOrder == true ? "" : "-";
-            this.options.data = this.options.data.sort(this._customSort(sortstring + this._privateData.sortField));
+            this.options.data = this.options.data.sort(this._customSort(sortstring + this._privateData.sortField, type));
             this._refresh();
         },
         _searchText: function (searchtext) {
@@ -782,6 +813,7 @@
 
                     if (!($(event.currentTarget).attr('data-realname') === "amalgated")) {
                         var sortField = $(event.currentTarget).attr('data-realname');
+                        var fieldType = $(event.currentTarget).attr('data-fieldtype');
                         if (!this._privateData.sortField === sortField) {
                             this._privateData.sortOrder = true;
                         } else {
@@ -792,7 +824,7 @@
                         this._privateData.currentBlock = 1;
                         this._privateData.currentPage = 1;
                         this._renderPagination();
-                        this._sort();
+                        this._sort(fieldType);
                     }
                 }
             });
