@@ -103,7 +103,8 @@
                     this._searchText(this.element.find('input.searchtextfield').val());
                 } else {
                     if (this._privateData.sortField !== null || this._privateData.sortField !== "") {
-                        this._sort();
+                        //this.element.find('th[data-realname=' + this._privateData.sortField + ']').trigger("click");
+                        this._sort(this._privateData.sortFieldType);
                     } else {
                         this._refresh();
                     }
@@ -820,6 +821,7 @@
                             this._privateData.sortOrder = !this._privateData.sortOrder;
                         }
                         this._privateData.sortField = sortField;
+                        this._privateData.sortFieldType = fieldType;
                         this.element.find('.paginationcontainer > ul > li').removeClass('active');
                         this._privateData.currentBlock = 1;
                         this._privateData.currentPage = 1;

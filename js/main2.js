@@ -9,7 +9,7 @@ $(function () {
         $('#sample2').vGrid({
             data: data.fathers,
             showOnlyMode: true,
-            sortField: "email",
+            sortField: "name",
             sortFieldType: "string",
             showOnlyFields: ["ID","name","email","dateofbirth","biography","comments","accounts", "spousename", "married"],
             amalgateColumns: [{
@@ -23,9 +23,10 @@ $(function () {
         });
     });
 
-  /*  setTimeout(function(){
-          globaldata.fathers = globaldata.fathers.splice(1,5);
+    setTimeout(function(){
+          globaldata.fathers.splice(1,5);
+          
           $('#sample2').vGrid('option', 'data', globaldata.fathers);
-    },4000)
-*/
+    },8000)
+
 })
