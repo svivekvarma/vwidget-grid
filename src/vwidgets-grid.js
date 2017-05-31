@@ -172,7 +172,7 @@
                             if (result.length === 0) {
                                 headers.push(key);
                                 var tempObj = {};
-                                tempObj[key] =  typeof obj[key];
+                                tempObj[key] = typeof obj[key];
                                 this._privateData.fieldType.push(tempObj);
                             }
                         }
@@ -181,20 +181,20 @@
                 this._privateData.headers = headers;
             } else {
                 this._privateData.headers = this.options.showOnlyFields;
-                 if (this.options.data.length > 0) {
+                if (this.options.data.length > 0) {
                     var obj = this.options.data[0];
                     var i = 0, field;
-                    for(i=0; i< this.options.showOnlyFields.length; i++){
-                        
+                    for (i = 0; i < this.options.showOnlyFields.length; i++) {
+
                         field = this.options.showOnlyFields[i];
                         var tempObj = {};
                         tempObj[field] = typeof obj[this.options.showOnlyFields[i]];
                         this._privateData.fieldType.push(tempObj);
-                    } 
-                 }
+                    }
+                }
             }
         },
-        _getFieldType: function(data){
+        _getFieldType: function (data) {
             return typeof data;
         },
         _renderDisplayRecordsInfo: function () {
@@ -308,10 +308,10 @@
             }
             return { startpage: startpage, endpage: endpage };
         },
-        _getFieldType: function(field){
-            var i =0, type;
-            for(i = 0; i< this._privateData.fieldType.length; i++){
-                if(this._privateData.fieldType[i][field]){
+        _getFieldType: function (field) {
+            var i = 0, type;
+            for (i = 0; i < this._privateData.fieldType.length; i++) {
+                if (this._privateData.fieldType[i][field]) {
                     type = this._privateData.fieldType[i][field];
                     break;
                 }
@@ -337,7 +337,7 @@
                 if (this.options.showOnlyMode) {
                     for (var i = 0; i < this.options.showOnlyFields.length; i++) {
 
-                        arrHTML.push(' <th data-realname="' + this.options.showOnlyFields[i] + '" data-fieldType="' + this._getFieldType(this.options.showOnlyFields[i]) +'">');
+                        arrHTML.push(' <th data-realname="' + this.options.showOnlyFields[i] + '" data-fieldType="' + this._getFieldType(this.options.showOnlyFields[i]) + '">');
                         arrHTML.push('<div>');
                         arrHTML.push(this._headerOutput(this.options.showOnlyFields[i]));
                         arrHTML.push('<div class="sortersymbols">');
@@ -359,7 +359,7 @@
                 } else {
                     if (this._privateData.headers.length > 0) {
                         for (var i = 0; i < this._privateData.headers.length; i++) {
-                            arrHTML.push(' <th data-realname="' + this._privateData.headers[i] + '" data-fieldType="' + this._getFieldType(this._privateData.headers[i]) +'">');
+                            arrHTML.push(' <th data-realname="' + this._privateData.headers[i] + '" data-fieldType="' + this._getFieldType(this._privateData.headers[i]) + '">');
                             arrHTML.push('<div>');
                             arrHTML.push(this._headerOutput(this._privateData.headers[i]));
                             arrHTML.push('<div class="sortersymbols">');
@@ -664,8 +664,9 @@
 
             var m = 0;
             tempHeader = [];
-
+           
             for (m = 0; m < this._privateData.headers.length; m++) {
+             
                 if (this._privateData.headers[m] == "ID") {
                     tempHeader.push("idx");
                 } else {
@@ -785,13 +786,25 @@
                 var filtereddata = [];
                 for (var i = 0; i < this._privateData.originalData.length; i++) {
                     for (var property in this._privateData.originalData[i]) {
+
                         var tobebroken = false;
+
                         if (this._privateData.originalData[i].hasOwnProperty(property)) {
 
                             if (this._privateData.originalData[i][property] != null && this._privateData.originalData[i][property] != '' && this._privateData.originalData[i][property] != undefined) {
                                 if (this._privateData.originalData[i][property].toString().toLowerCase().indexOf(searchtext.toLowerCase()) >= 0) {
-                                    filtereddata.push(this._privateData.originalData[i]);
-                                    tobebroken = true;
+                                    if (!this.options.showOnlyMode) {
+                                        filtereddata.push(this._privateData.originalData[i]);
+                                        tobebroken = true;
+                                    } else {
+                                        var fieldexists = $.grep(this.options.showOnlyFields, $.proxy(function (n, i) {
+                                            return n === property;
+                                        },this));
+                                        if (fieldexists.length > 0) {
+                                            filtereddata.push(this._privateData.originalData[i]);
+                                            tobebroken = true;
+                                        }
+                                    }
                                 }
                             }
                             if (tobebroken)
