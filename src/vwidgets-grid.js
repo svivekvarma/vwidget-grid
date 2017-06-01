@@ -663,15 +663,41 @@
             }
 
             var m = 0;
-            tempHeader = [];
-           
+            var tempHeader = [];
+            var templateField = [];
+            var headerFieldOutput = '';
             for (m = 0; m < this._privateData.headers.length; m++) {
-             
-                if (this._privateData.headers[m] == "ID") {
-                    tempHeader.push("idx");
+
+                if (this.options.showOnlyMode) {
+                    templateField = $.grep(this.options.headerTemplate, $.proxy(function (n, i) {
+                        return n.fieldName === this._privateData.headers[m];
+                    }, this));
+                    if (templateField.length > 0) {
+                        templateField = templateField[0];
+                        var headerFieldOutput = templateField.template();
+
+                        if (headerFieldOutput == "ID") {
+                            tempHeader.push("idx");
+                        } else {
+                            tempHeader.push(headerFieldOutput);
+                        }
+                    } else {
+                        if (this._privateData.headers[m] == "ID") {
+                            tempHeader.push("idx");
+                        } else {
+                            tempHeader.push(this._privateData.headers[m]);
+                        }
+                    }
                 } else {
-                    tempHeader.push(this._privateData.headers[m]);
+
+                    if (this._privateData.headers[m] == "ID") {
+                        tempHeader.push("idx");
+                    } else {
+                        tempHeader.push(this._privateData.headers[m]);
+                    }
                 }
+                templateField = [];
+                headerFieldOutput = '';
             }
 
             result = '';
@@ -799,7 +825,7 @@
                                     } else {
                                         var fieldexists = $.grep(this.options.showOnlyFields, $.proxy(function (n, i) {
                                             return n === property;
-                                        },this));
+                                        }, this));
                                         if (fieldexists.length > 0) {
                                             filtereddata.push(this._privateData.originalData[i]);
                                             tobebroken = true;

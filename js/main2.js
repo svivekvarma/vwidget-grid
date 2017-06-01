@@ -9,6 +9,11 @@ $(function () {
         $('#sample2').vGrid({
             data: data.fathers,
             showOnlyMode: true,
+            headerTemplate : [
+                {fieldName:'name', template: function(){ return 'Name'}},
+                {fieldName:'email', template: function(){ return 'Email'}},
+                {fieldName:'biography', template: function(){ return 'Biography'}}
+            ],
             sortField: "name",
             sortFieldType: "string",
             showOnlyFields: ["ID","name","email","dateofbirth","biography","comments","accounts", "spousename", "married"],
