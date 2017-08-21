@@ -216,7 +216,7 @@
                     arrHTML.push('</div>');
                 }
                 if (this.options.showCsvOption) {
-                    arrHTML.push('<div class="icon downloadicon">');
+                    arrHTML.push('<div class="icon downloadicon" aria-label="Download excel format data">');
                     arrHTML.push('</div>');
                 }
                 if (this.options.showPDFOption) {
@@ -241,7 +241,8 @@
                 var arrPagination = [];
 
                 if (!this._privateData.renderedPagination) {
-                    arrPagination.push('<ul>');
+                    arrPagination.push('<ul role="navigation">');
+                    arrPagination.push('<p class="visually-hidden" id="pagination-label">Page Navigation</p>');
                     arrPagination.push('</ul>');
                     this.element.find('.paginationcontainer').html(arrPagination.join(''));
                     arrPagination = [];
@@ -260,15 +261,16 @@
                 startpage = result.startpage;
                 endpage = result.endpage;
 
-                arrPagination.push('<li class="paginationpage"><a>' + "<<" + '</a></li>');
+                arrPagination.push('<li data-page="<<" class="paginationpage"><a ><span class="visually-hidden">Previous set of pages</span>' + "<<" + '</a></li>');
                 for (var i = startpage; i <= endpage; i++) {
+                    arrPagination.push('<span class="visually-hidden">' + i + '</span>');
                     if (i == this._privateData.currentPage) {
-                        arrPagination.push('<li class="paginationpage active"><a>' + i + '</a></li>');
+                        arrPagination.push('<li data-page="'+ i + '" class="paginationpage active"><a >' + i + '</a></li>');
                     } else {
-                        arrPagination.push('<li class="paginationpage"><a>' + i + '</a></li>');
+                        arrPagination.push('<li data-page="'+ i + '" class="paginationpage"><a >' + i + '</a></li>');
                     }
                 }
-                arrPagination.push('<li class="paginationpage"><a>' + ">>" + '</a></li>');
+                arrPagination.push('<li data-page=">>" class="paginationpage"><a ><span class="visually-hidden">Next set of pages</span>' + ">>" + '</a></li>');
                 this.element.find('.paginationcontainer').find('ul').html(arrPagination.join(''));
                 this._privateData.renderedPagination = true;
             }
@@ -321,7 +323,7 @@
         _generateTable: function (exportmode) {
             var arrHTML = [];
 
-            arrHTML.push('<table class=\'' + this.options.css.table + '\'>');
+            arrHTML.push('<table class=\'' + this.options.css.table + '\' aria-role="grid">');
             arrHTML.push(' <thead>');
             if ((this._privateData.headers.length > 0 || this.options.amalgateColumns.length > 0) && this.options.data.length > 0) {
 
@@ -964,7 +966,7 @@
             this._on(this.element, {
                 "click .paginationpage": function (event) {
                     event.stopImmediatePropagation();
-                    var pagenum = $(event.currentTarget).text();
+                    var pagenum = $(event.currentTarget).attr("data-page");
                     this.element.find('.paginationcontainer > ul > li').removeClass('active');
                     if (!(pagenum === "<<" || pagenum === ">>")) {
                         this._privateData.currentPage = parseInt(pagenum, 10);

@@ -28,10 +28,10 @@ $(function () {
         });
     });
 
-    setTimeout(function(){
-          globaldata.fathers.splice(1,5);
+   // setTimeout(function(){
+   //       globaldata.fathers.splice(1,5);
           
-          $('#sample2').vGrid('option', 'data', globaldata.fathers);
-    },8000)
+   //       $('#sample2').vGrid('option', 'data', globaldata.fathers);
+   // },8000)
 
 })
