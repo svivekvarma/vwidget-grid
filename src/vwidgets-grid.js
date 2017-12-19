@@ -12,8 +12,7 @@
                 // if it's defined (how jquery works)
                 if (typeof window !== 'undefined') {
                     jQuery = require('jquery');
-                }
-                else {
+                } else {
                     jQuery = require('jquery')(root);
                 }
             }
@@ -48,7 +47,7 @@
             datetimefields: [],
             sortField: "",
             sortFieldType: "",
-            rowEvents: function () { },
+            rowEvents: function () {},
             showPagination: true,
             paginationPageSize: 5,
             pageSize: 25,
@@ -183,7 +182,8 @@
                 this._privateData.headers = this.options.showOnlyFields;
                 if (this.options.data.length > 0) {
                     var obj = this.options.data[0];
-                    var i = 0, field;
+                    var i = 0,
+                        field;
                     for (i = 0; i < this.options.showOnlyFields.length; i++) {
 
                         field = this.options.showOnlyFields[i];
@@ -265,9 +265,9 @@
                 for (var i = startpage; i <= endpage; i++) {
                     arrPagination.push('<span class="visually-hidden">' + i + '</span>');
                     if (i == this._privateData.currentPage) {
-                        arrPagination.push('<li data-page="'+ i + '" class="paginationpage active"><a >' + i + '</a></li>');
+                        arrPagination.push('<li data-page="' + i + '" class="paginationpage active"><a >' + i + '</a></li>');
                     } else {
-                        arrPagination.push('<li data-page="'+ i + '" class="paginationpage"><a >' + i + '</a></li>');
+                        arrPagination.push('<li data-page="' + i + '" class="paginationpage"><a >' + i + '</a></li>');
                     }
                 }
                 arrPagination.push('<li data-page=">>" class="paginationpage"><a ><span class="visually-hidden">Next set of pages</span>' + ">>" + '</a></li>');
@@ -308,10 +308,14 @@
             if (endpage > this._privateData.totalPages) {
                 endpage = this._privateData.totalPages;
             }
-            return { startpage: startpage, endpage: endpage };
+            return {
+                startpage: startpage,
+                endpage: endpage
+            };
         },
         _getFieldType: function (field) {
-            var i = 0, type;
+            var i = 0,
+                type;
             for (i = 0; i < this._privateData.fieldType.length; i++) {
                 if (this._privateData.fieldType[i][field]) {
                     type = this._privateData.fieldType[i][field];
@@ -330,7 +334,7 @@
                 if (this.options.amalgateColumns.length > 0) {
                     for (var i = 0; i < this.options.amalgateColumns.length; i++) {
                         if (this.options.amalgateColumns[i].prepend) {
-                            arrHTML.push(' <th data-realname="amalgated">');
+                            arrHTML.push(' <th data-realname="amalgated" ' + this._generateAttributes(this.options.amalgateColumns[i].headerAttributes) + '>');
                             arrHTML.push(this.options.amalgateColumns[i].columnHeader);
                             arrHTML.push('</th>');
                         }
@@ -339,7 +343,7 @@
                 if (this.options.showOnlyMode) {
                     for (var i = 0; i < this.options.showOnlyFields.length; i++) {
 
-                        arrHTML.push(' <th data-realname="' + this.options.showOnlyFields[i] + '" data-fieldType="' + this._getFieldType(this.options.showOnlyFields[i]) + '">');
+                        arrHTML.push(' <th data-realname="' + this.options.showOnlyFields[i] + '" data-fieldType="' + this._getFieldType(this.options.showOnlyFields[i]) + '"' + this._generateAttributes(this._getHeaderFieldObject(this.options.showOnlyFields[i]).headerAttributes) + '>');
                         arrHTML.push('<div>');
                         arrHTML.push(this._headerOutput(this.options.showOnlyFields[i]));
                         arrHTML.push('<div class="sortersymbols">');
@@ -361,7 +365,7 @@
                 } else {
                     if (this._privateData.headers.length > 0) {
                         for (var i = 0; i < this._privateData.headers.length; i++) {
-                            arrHTML.push(' <th data-realname="' + this._privateData.headers[i] + '" data-fieldType="' + this._getFieldType(this._privateData.headers[i]) + '">');
+                            arrHTML.push(' <th data-realname="' + this._privateData.headers[i] + '" data-fieldType="' + this._getFieldType(this._privateData.headers[i]) + '"' + this._generateAttributes(this._privateData.headers[i].headerAttributes)   +'>');
                             arrHTML.push('<div>');
                             arrHTML.push(this._headerOutput(this._privateData.headers[i]));
                             arrHTML.push('<div class="sortersymbols">');
@@ -388,7 +392,7 @@
                 if (this.options.amalgateColumns.length > 0) {
                     for (var i = 0; i < this.options.amalgateColumns.length; i++) {
                         if (!this.options.amalgateColumns[i].prepend) {
-                            arrHTML.push(' <th data-realname="amalgated">');
+                            arrHTML.push(' <th data-realname="amalgated"' + this._generateAttributes(this.options.amalgateColumns[i].headerAttributes) +  '>');
                             arrHTML.push(this.options.amalgateColumns[i].columnHeader);
                             arrHTML.push('</th>');
                         }
@@ -403,6 +407,18 @@
             arrHTML.push('</table>');
             this.element.find('.gridcontainer').html(arrHTML.join(''));
             return;
+        },
+        _generateAttributes: function (attribs) {
+            var arrHtml = [];
+            if (attribs) {
+                for(var i =0; i < attribs.length; i++){
+                    for(var key in attribs[i]){
+                        arrHtml.push(' ');
+                        arrHtml.push(key + '=' + '"' + attribs[i][key] +  '"'); 
+                    }
+                }
+            }
+            return arrHtml.join('');
         },
         _generateList: function (exportmode) {
             var arrHTML = [];
@@ -554,7 +570,10 @@
                 startrecord = 0;
                 endrecord = this.options.data.length - 1;
             }
-            return { startrecord: startrecord, endrecord: endrecord };
+            return {
+                startrecord: startrecord,
+                endrecord: endrecord
+            };
         },
         _headerOutput: function () {
             var field = arguments[0];
@@ -562,6 +581,17 @@
                 for (var i = 0; i < this.options.headerTemplate.length; i++) {
                     if (this.options.headerTemplate[i].fieldName.toLowerCase() === field.toLowerCase()) {
                         return this.options.headerTemplate[i].template(field);
+                    }
+                }
+            }
+            return field;
+        },
+        _getHeaderFieldObject: function(){
+            var field = arguments[0];
+            if (this.options.headerTemplate.length > 0) {
+                for (var i = 0; i < this.options.headerTemplate.length; i++) {
+                    if (this.options.headerTemplate[i].fieldName.toLowerCase() === field.toLowerCase()) {
+                        return this.options.headerTemplate[i];
                     }
                 }
             }
@@ -770,9 +800,15 @@
             //doc.autoTable(this._privateData.headers, rows);
 
             doc.autoTable(this._privateData.headers, rows, {
-                margin: { horizontal: 10 },
-                styles: { overflow: 'linebreak' },
-                bodyStyles: { valign: 'top' }
+                margin: {
+                    horizontal: 10
+                },
+                styles: {
+                    overflow: 'linebreak'
+                },
+                bodyStyles: {
+                    valign: 'top'
+                }
             });
             doc.save("export.pdf");
         },
