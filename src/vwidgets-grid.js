@@ -205,7 +205,7 @@
         },
         _renderSearchandExportOption: function () {
             if (this.options.showSearchOption) {
-                this.element.find('.searchsection').html('<label>Search </label><input type="search" class="searchtextfield" placeholder="Filter your results by typing search text"/>');
+                this.element.find('.searchsection').html('<label>Search </label><input type="search" aria-label="Search field for filtering records" class="searchtextfield" placeholder="Filter your results by typing search text"/>');
             }
             var arrHTML = [];
             if (this.options.showPrintOption || this.options.showExportOptions) {
