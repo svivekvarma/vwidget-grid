@@ -1,6 +1,6 @@
 {
   "name": "vwidget-grid",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "A simple grid plugin to render data responsively and has native and bootstrap plugins built in",
   "main": "index.js",
   "scripts": {

@@ -45,6 +45,11 @@ ul li.active:hover {
     background-color: #CED8DE;
 }
 
+.paginationcontainer ul li.active,
+ul li.active:hover a {
+    background-color: #081e2c;
+}
+
 .paginationcontainer ul li:last-child {
     border-right: none;
 }
